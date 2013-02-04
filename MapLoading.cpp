@@ -376,14 +376,16 @@ void readBlockToSegment(DFHack::Core& DF, WorldSegment& segment,
                     shouldBeIncluded = true;
             }
 
-            if(!shouldBeIncluded){
-                continue;
-            }
             Tile * b = segment.ResetTile(gx, gy, BlockZ, trueBlock->tiletype[lx][ly]);
             b->occ = trueBlock->occupancy[lx][ly];
             b->occ.bits.unit = false;//this will be set manually when we read the creatures vector
             b->designation = trueBlock->designation[lx][ly];
             b->fog_of_war = !b->designation.bits.pile;
+            
+            if(!shouldBeIncluded){
+                b->visible = false;
+                continue;
+            }
 
             //don't read detailed information for blackbox tiles
             if(!ssConfig.show_hidden_tiles
@@ -426,6 +428,9 @@ void readBlockToSegment(DFHack::Core& DF, WorldSegment& segment,
                 continue;
             }
         }
+        if(segment.tileschanged){
+            b->visible = true;
+        }
         if( b->tileShape() == tiletype_shape::TREE ||
             b->tileShape() == tiletype_shape::SAPLING ||
             b->tileShape() == tiletype_shape::SHRUB) {
@@ -448,6 +453,9 @@ void readBlockToSegment(DFHack::Core& DF, WorldSegment& segment,
 				return;
 			}
 		}
+        if(segment.tileschanged){
+            b->visible = true;
+        }
 		b->Item = ConvertItem(found_item, segment);
 	}
 
@@ -465,6 +473,9 @@ void readBlockToSegment(DFHack::Core& DF, WorldSegment& segment,
                 if(!b) {
                     continue;
                 }
+            }
+            if(segment.tileschanged){
+                b->visible = true;
             }
             if(eff->density > b->tileeffect.density 
                 || b->tileeffect.type == (df::flow_type) INVALID_INDEX) {
@@ -546,7 +557,7 @@ void readMapSegment(WorldSegment* segment, int x, int y, int z, int sizex, int s
         }
     }
 
-    if(segment->rotation % 2) {
+    if(segment->segState.DisplayedRotation % 2) {
         int temp = sizex;
         sizex = sizey;
         sizey = temp;
@@ -724,7 +735,7 @@ void read_segment( void *arg)
         beautifySegment(segment);
 
         //putting these here to increase responsiveness of the UI and to make megashots work
-        segment->displayed = ssState.DisplayedSegment;
+        segment->segState.DisplayedSegment = ssState.DisplayedSegment;
 
         segment->AssembleAllTiles();
 

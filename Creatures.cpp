@@ -516,6 +516,9 @@ void ReadCreaturesToSegment( DFHack::Core& DF, WorldSegment* segment)
                 continue;
             }
         }
+        if(segment->tileschanged){
+            b->visible = true;
+        }
 
         // creature already there? SKIP.
         if(b->occ.bits.unit && b->creature) {

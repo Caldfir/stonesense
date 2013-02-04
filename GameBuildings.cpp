@@ -150,6 +150,9 @@ void MergeBuildingsToSegment(vector<Buildings::t_building>* buildings, WorldSegm
 							continue;
 						}
 					}
+                    if(segment->tileschanged){
+                        b->visible = true;
+                    }
 					//want hashtable :(
 					// still need to test for b, because of ramp/building overlap
 

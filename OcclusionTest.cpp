@@ -31,11 +31,12 @@ inline bool hasOpaqueFloor(Tile * b){
 
 bool is_tile_solid(Tile * b)
 {
-    if(b->material.type == 3 ||
-            b->material.type == 4 ||
-            b->material.type == 5 ||
-            b->material.type == 6) {
-        return false;
+    if( (!b->visible) ||
+        b->material.type == 3 ||
+        b->material.type == 4 ||
+        b->material.type == 5 ||
+        b->material.type == 6) {
+            return false;
     }
     return hasOpaqueSides(b) || hasOpaqueFloor(b);
 }
@@ -162,7 +163,7 @@ void occlude_tile(Tile * b)
 
     int stepX, stepY;
 
-    switch(b->ownerSegment->rotation) {
+    switch(b->ownerSegment->segState.DisplayedRotation) {
     case 0:
         stepX = 1;
         stepY = 1;

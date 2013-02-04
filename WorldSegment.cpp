@@ -179,9 +179,9 @@ Tile* WorldSegment::getTile(uint32_t index)
 
 void WorldSegment::CorrectTileForSegmentOffset(int32_t& xin, int32_t& yin, int32_t& zin)
 {
-    xin -= displayed.x;
-    yin -= displayed.y; //DisplayedSegment.y;
-    zin -= displayed.z - 1; //need to remove the offset
+    xin -= segState.DisplayedSegment.x;
+    yin -= segState.DisplayedSegment.y; //DisplayedSegment.y;
+    zin -= segState.DisplayedSegment.z - 1; //need to remove the offset
 }
 
 void WorldSegment::CorrectTileForSegmentRotation(int32_t& x, int32_t& y, int32_t& z)
@@ -189,15 +189,15 @@ void WorldSegment::CorrectTileForSegmentRotation(int32_t& x, int32_t& y, int32_t
     int32_t oldx = x;
     int32_t oldy = y;
 
-    if(rotation == 1) {
+    if(segState.DisplayedRotation == 1) {
         x = size.x - oldy -1;
         y = oldx;
     }
-    if(rotation == 2) {
+    if(segState.DisplayedRotation == 2) {
         x = size.x - oldx -1;
         y = size.y - oldy -1;
     }
-    if(rotation == 3) {
+    if(segState.DisplayedRotation == 3) {
         x = oldy;
         y = size.y - oldx -1;
     }
